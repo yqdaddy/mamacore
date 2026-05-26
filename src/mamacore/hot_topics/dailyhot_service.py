@@ -1,88 +1,114 @@
-"""DailyHotApi HTTP 客户端 —— 热榜聚合服务 Python 封装。
+#!/usr/bin/env python3
+"""dailyhot-skill 集成 —— 自动管理 Node.js 服务进程，无需手动启动。
 
-支持 56+ 平台热榜：微博/知乎/头条/B站/抖音/百度/豆瓣/36Kr/CSDN 等。
-需要先启动 Node.js 服务: cd services/dailyhot && npm start
+设计理念：
+- 首次调用时自动启动 localhost:6688 服务
+- 后续调用复用已有服务
+- 进程退出时自动清理
+
+使用方式：
+    client = DailyHotClient()  # 自动启动服务
+    topics = await client.get_hot_topics("weibo", count=20)
 """
 
-import httpx
 import json
+import os
+import signal
+import subprocess
 import time
-import asyncio
+import sys
+import atexit
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+import httpx
+
 from .models import HotTopic, HotTopicList
 
-# 默认本地服务地址
-DEFAULT_BASE_URL = "http://localhost:6688"
+# 服务配置
+SERVICE_DIR = Path(__file__).parent.parent.parent.parent / "services" / "dailyhot"
+SERVICE_PORT = int(os.environ.get("DAILYHOT_PORT", "6688"))
+BASE_URL = f"http://localhost:{SERVICE_PORT}"
 
-# 缓存配置
-CACHE_DIR = Path(__file__).parent.parent.parent.parent / "data" / "cache" / "dailyhot"
-CACHE_TTL_SECONDS = 1800  # 30 分钟缓存
+# 全局进程引用
+_server_process: Optional[subprocess.Popen] = None
 
 
-class RateLimiter:
-    """请求频率限制器。"""
+def _start_server() -> bool:
+    """启动 dailyhot-api Node.js 服务（后台进程）。
 
-    def __init__(self, calls_per_minute: int = 60):
-        self.interval = 60.0 / calls_per_minute
-        self.last_call = 0.0
+    仅在首次调用时启动，后续复用。
+    """
+    global _server_process
 
-    async def wait(self):
-        now = time.time()
-        elapsed = now - self.last_call
-        if elapsed < self.interval:
-            await asyncio.sleep(self.interval - elapsed)
-        self.last_call = time.time()
+    # 已启动则不重复
+    if _server_process is not None and _server_process.poll() is None:
+        return True
+
+    # 检查是否已在运行
+    try:
+        httpx.get(f"{BASE_URL}/all", timeout=2)
+        return True
+    except (httpx.ConnectError, httpx.TimeoutException):
+        pass
+
+    # 检查依赖是否已安装
+    if not (SERVICE_DIR / "node_modules").exists():
+        print("[dailyhot] 正在安装 Node.js 依赖...", file=sys.stderr)
+        subprocess.run(
+            ["npm", "install"],
+            cwd=str(SERVICE_DIR),
+            capture_output=True,
+            text=True,
+        )
+
+    # 启动服务
+    print(f"[dailyhot] 正在启动热榜服务 (端口 {SERVICE_PORT})...", file=sys.stderr)
+    _server_process = subprocess.Popen(
+        ["node", "scripts/start-server.mjs", str(SERVICE_PORT)],
+        cwd=str(SERVICE_DIR),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    # 等待服务就绪（最多 10 秒）
+    for _ in range(20):
+        time.sleep(0.5)
+        try:
+            resp = httpx.get(f"{BASE_URL}/all", timeout=2)
+            if resp.status_code == 200:
+                print(f"[dailyhot] 热榜服务就绪", file=sys.stderr)
+                return True
+        except (httpx.ConnectError, httpx.TimeoutException):
+            continue
+
+    print(f"[dailyhot] 服务启动超时", file=sys.stderr)
+    return False
+
+
+def _cleanup_server():
+    """进程退出时自动清理服务。"""
+    global _server_process
+    if _server_process is not None and _server_process.poll() is None:
+        _server_process.send_signal(signal.SIGTERM)
+        _server_process = None
+
+
+# 注册退出清理
+atexit.register(_cleanup_server)
 
 
 class DailyHotClient:
-    """DailyHotApi 本地服务客户端。"""
+    """dailyhot-skill 客户端 —— 自动管理服务，无需手动启动。"""
 
-    def __init__(
-        self,
-        base_url: str = DEFAULT_BASE_URL,
-        timeout: float = 15.0,
-        use_cache: bool = True,
-        calls_per_minute: int = 60,
-    ):
-        self.base_url = base_url.rstrip("/")
+    def __init__(self, timeout: float = 15.0):
         self.timeout = timeout
-        self.use_cache = use_cache
-        self.rate_limiter = RateLimiter(calls_per_minute=calls_per_minute)
-
-    def _cache_path(self, source: str) -> Path:
-        return CACHE_DIR / f"hot_{source}.json"
-
-    def _is_cache_valid(self, source: str) -> bool:
-        if not self.use_cache:
-            return False
-        cache_file = self._cache_path(source)
-        if not cache_file.exists():
-            return False
-        age = time.time() - cache_file.stat().st_mtime
-        return age < CACHE_TTL_SECONDS
-
-    def _load_cache(self, source: str) -> Optional[dict]:
-        cache_file = self._cache_path(source)
-        if cache_file.exists():
-            with open(cache_file, encoding="utf-8") as f:
-                return json.load(f)
-        return None
-
-    def _save_cache(self, source: str, data: list) -> None:
-        CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        cache_file = self._cache_path(source)
-        with open(cache_file, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
 
     @staticmethod
     def _parse_items(raw_data: list[dict], source: str) -> list[HotTopic]:
-        """解析 API 返回的数据为 HotTopic 列表。"""
         topics = []
         for item in raw_data:
-            # DailyHotApi 返回格式: {title, description, url, hot, timestamp, ...}
             hot_score = item.get("hot", 0) or 0
             if isinstance(hot_score, str):
                 hot_score = int(hot_score) if hot_score.isdigit() else 0
@@ -97,7 +123,7 @@ class DailyHotClient:
 
             topics.append(HotTopic(
                 title=item.get("title", ""),
-                description=item.get("description", "") or "",
+                description=item.get("description", "") or item.get("desc", "") or "",
                 url=item.get("url", "") or "",
                 source=source,
                 hot_score=hot_score,
@@ -105,63 +131,34 @@ class DailyHotClient:
             ))
         return topics
 
-    async def get_sources(self) -> list[str]:
-        """获取所有可用数据源列表。"""
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
-            resp = await client.get(f"{self.base_url}/all")
-            resp.raise_for_status()
-            data = resp.json()
-            return data.get("data", [])
-
     async def get_hot_topics(
         self,
         source: str = "weibo",
         count: int = 20,
     ) -> HotTopicList:
-        """抓取指定平台的热点数据。
-
-        先查缓存，缓存失效时再请求本地服务。
-        每次 API 请求前会经过限流器。
-
-        Args:
-            source: 数据来源 (weibo/zhihu/toutiao/baidu/douyin/bilibili 等)
-            count: 返回数量上限
-        """
+        """查询热榜。自动启动服务（如需），无需手动干预。"""
         count = max(1, min(50, count))
 
-        # 先检查缓存
-        if self.use_cache and self._is_cache_valid(source):
-            cached = self._load_cache(source)
-            if cached:
-                topics = self._parse_items(cached[:count], source)
-                return HotTopicList(
-                    topics=topics,
-                    source=source,
-                    fetched_at=datetime.now(),
-                    total=len(topics),
-                )
-
-        # 缓存失效，请求 API（先等限流器）
-        await self.rate_limiter.wait()
+        # 自动启动服务
+        if not _start_server():
+            raise ConnectionError(
+                f"无法启动 dailyhot 服务 (端口 {SERVICE_PORT})。\n"
+                f"请检查 Node.js 是否已安装: node --version"
+            )
 
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
-                url = f"{self.base_url}/{source}"
+                url = f"{BASE_URL}/{source}"
                 resp = await client.get(url)
                 resp.raise_for_status()
                 data = resp.json()
         except httpx.ConnectError:
             raise ConnectionError(
-                f"无法连接到 DailyHotApi 服务 ({self.base_url})。\n"
-                f"请先启动服务: cd services/dailyhot && bash start.sh"
+                f"无法连接到热榜服务 ({BASE_URL})。\n"
+                f"请检查 Node.js 是否已安装并重试。"
             )
 
         raw_data = data.get("data", [])
-
-        # 保存缓存
-        if self.use_cache:
-            self._save_cache(source, raw_data)
-
         topics = self._parse_items(raw_data[:count], source)
 
         return HotTopicList(

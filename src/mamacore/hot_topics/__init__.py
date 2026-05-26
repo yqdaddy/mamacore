@@ -1,7 +1,7 @@
 """热点抓取模块 —— 双数据源。
 
 1. 公众号爆款文章 (gzh.litpp.com) — 专注公众号爆款内容
-2. DailyHotApi 热榜聚合 (本地服务) — 30+ 平台通用热榜
+2. DailyHotApi 热榜聚合 (自动启动服务) — 30+ 平台通用热榜
 """
 
 import os
@@ -28,7 +28,7 @@ def register_tools(mcp) -> None:
         - source="weibo/zhihu/toutiao/baidu/douyin/bilibili/...": DailyHotApi 热榜
 
         公众号爆款无需部署，直接调用。
-        DailyHotApi 热榜需先启动本地服务: services/dailyhot/start.sh
+        DailyHotApi 热榜服务自动启动: services/dailyhot/start.sh
 
         Args:
             source: 数据源。gzh=公众号爆款，其他=DailyHotApi 对应平台
@@ -89,17 +89,15 @@ async def _query_gzh_explosive(keyword: str, count: int, days: int) -> str:
 
 async def _query_dailyhot(source: str, count: int) -> str:
     """查询 DailyHotApi 热榜。"""
-    service_url = os.environ.get("DAILYHOT_API_URL", "http://localhost:6688")
     count = max(1, min(50, count))
-    client = DailyHotClient(base_url=service_url)
+    client = DailyHotClient()
 
     try:
         result = await client.get_hot_topics(source, count)
     except ConnectionError as e:
         return (
             f"热榜查询失败：{e}\n\n"
-            f"DailyHotApi 热榜需要启动本地服务：\n"
-            f"  cd services/dailyhot && npm install && npm start\n\n"
+            f"DailyHotApi 热榜自动启动 (无需手动干预)：\n"
             f"可用平台: weibo/zhihu/toutiao/baidu/douyin/bilibili/36kr/juejin/csdn 等"
         )
     except Exception as e:
