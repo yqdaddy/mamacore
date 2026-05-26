@@ -63,16 +63,20 @@ cp .env.example .env
 cp .mcp.json.example .mcp.json
 ```
 
-### 启动热榜服务（可选，用于 DailyHotApi 数据源）
+### 热榜服务（自动启动）
+
+首次调用 DailyHotApi 热榜时会自动启动 Node.js 服务，无需手动干预。
+
+首次调用前需要安装 Node.js 依赖：
 
 ```bash
-# 方式一：一键启动
-bash services/dailyhot/start.sh
+cd services/dailyhot && npm install
+```
 
-# 方式二：手动启动
-cd services/dailyhot && pnpm start
+之后正常使用，服务会自动管理生命周期：
 
-# 启动后访问: http://localhost:6688/weibo
+```bash
+mama hot-today -s weibo -n 20   # 首次调用自动启动服务
 ```
 
 ## 配置
