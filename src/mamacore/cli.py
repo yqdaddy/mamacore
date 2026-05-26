@@ -272,5 +272,132 @@ def main():
     app()
 
 
+# ============================================================
+# 独立运行编排器 (Paseo 风格)
+# ============================================================
+
+@app.command("run")
+def run_task(
+    task: str = typer.Argument(..., help="任务描述，如：写一篇关于 AI Agent 的文章"),
+    provider: str = typer.Option("claude", "-p", "--provider", help="Agent: claude/codex/openclaw"),
+    framework: str = typer.Option("", "-f", "--framework", help="强制框架: checklist/pain/compare/narrative"),
+    style: str = typer.Option("", "-s", "--style", help="强制风格: satire/tongue/analytical/experience/science"),
+    model: str = typer.Option("", "--model", help="指定模型名称"),
+    timeout: int = typer.Option(1800, "--timeout", help="超时时间（秒）"),
+    yes: bool = typer.Option(False, "-y", "--yes", help="跳过确认"),
+):
+    """独立运行公众号文章任务，不依赖 Claude Code 宿主。
+
+    通过 Claude Code / Codex / OpenClaw 等 CLI Agent 驱动全流程。
+
+    示例:
+        mama run "写一篇关于 AI Agent 的文章" -p claude
+        mama run "写一篇关于职场成长的文章" -p claude -f pain -s experience
+        mama run "写一篇关于大模型的对比评测" -p codex -f compare -y
+    """
+    from mamacore.orchestrator.runner import run_task as _run
+
+    result = _run(
+        task_desc=task,
+        provider_name=provider,
+        framework=framework,
+        style=style,
+        model=model,
+        timeout=timeout,
+        no_confirm=yes,
+    )
+
+    if result.get("error"):
+        typer.echo(f"错误: {result['error']}", err=True)
+        raise typer.Exit(1)
+
+    if result.get("status") == "cancelled":
+        typer.echo("任务已取消。")
+        return
+
+    status_icon = "完成" if result["status"] == "completed" else "失败"
+    typer.echo(f"\n任务 {status_icon}")
+    if result.get("task_id"):
+        typer.echo(f"任务 ID: {result['task_id']}")
+    if result.get("log_file"):
+        typer.echo(f"日志文件: {result['log_file']}")
+
+
+@app.command("ls")
+def list_tasks(
+    status: str = typer.Option("all", "-s", "--status", help="过滤: all/running/completed/failed/killed"),
+):
+    """查看运行中的任务列表。"""
+    from mamacore.orchestrator.task_manager import TaskManager
+
+    tm = TaskManager()
+    tasks = tm.list_tasks(status)
+
+    if not tasks:
+        typer.echo("暂无任务。")
+        return
+
+    typer.echo(f"\n{'ID':<8} {'Provider':<10} {'状态':<10} {'任务描述':<40} {'开始时间'}")
+    typer.echo("-" * 120)
+    for t in tasks:
+        typer.echo(
+            f"{t['id']:<8} {t['provider']:<10} {t['status']:<10} "
+            f"{t['task_desc'][:40]:<40} {t.get('started_at', '')[:19]}"
+        )
+
+
+@app.command("attach")
+def attach_task(task_id: str = typer.Argument(..., help="任务 ID")):
+    """连接到正在运行的任务，查看实时日志。"""
+    from mamacore.orchestrator.task_manager import TaskManager
+
+    tm = TaskManager()
+    task = tm.get_task(task_id)
+    if not task:
+        typer.echo(f"任务 {task_id} 不存在。", err=True)
+        raise typer.Exit(1)
+
+    log_file = task.get("log_file")
+    if not log_file or not Path(log_file).exists():
+        typer.echo(f"任务 {task_id} 无日志文件。", err=True)
+        return
+
+    typer.echo(f"=== 任务 {task_id} 日志 ===")
+    typer.echo(f"Provider: {task['provider']}")
+    typer.echo(f"状态: {task['status']}")
+    typer.echo(f"---\n")
+
+    # 实时流式输出（tail -f）
+    import subprocess
+    subprocess.run(["tail", "-f", log_file])
+
+
+@app.command("kill")
+def kill_task(task_id: str = typer.Argument(..., help="任务 ID")):
+    """终止正在运行的任务。"""
+    from mamacore.orchestrator.task_manager import TaskManager
+
+    tm = TaskManager()
+    if tm.kill(task_id):
+        typer.echo(f"任务 {task_id} 已终止。")
+    else:
+        typer.echo(f"任务 {task_id} 不存在或已结束。", err=True)
+
+
+@app.command("providers")
+def show_providers():
+    """列出可用的 Agent Provider 及安装状态。"""
+    from mamacore.orchestrator.runner import list_available_providers
+
+    providers = list_available_providers()
+    typer.echo(f"\n{'Provider':<12} {'CLI 命令':<12} {'状态'}")
+    typer.echo("-" * 50)
+    for p in providers:
+        icon = "已安装" if p["available"] else "未安装"
+        typer.echo(f"{p['name']:<12} {p['cli']:<12} {icon}")
+
+    typer.echo("\n使用方式: mama run '任务描述' -p <provider>")
+
+
 if __name__ == "__main__":
     main()

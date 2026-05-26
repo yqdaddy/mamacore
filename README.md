@@ -147,6 +147,32 @@ mama analyze -a my_account -d 30
 mama publish article.html -t "文章标题"
 ```
 
+### 独立运行模式 (Paseo 风格)
+
+不依赖 Claude Code 宿主，通过 CLI 直接调度 Agent 完成全流程：
+
+```bash
+# 查看可用的 Agent Provider
+mama providers
+
+# 使用 Claude Code 驱动
+mama run "写一篇关于 AI Agent 的文章" -p claude
+
+# 指定框架和风格
+mama run "写一篇关于职场成长的文章" -p claude -f pain -s experience
+
+# 使用 OpenClaw 驱动
+mama run "写一篇关于大模型的对比评测" -p openclaw -f compare
+
+# 跳过确认
+mama run "写一篇关于育儿经验的文章" -p claude -y
+
+# 查看任务 / 连接日志 / 终止任务
+mama ls
+mama attach <task_id>
+mama kill <task_id>
+```
+
 ### Claude Code / MCP 工具
 
 21 个 MCP Tools：
