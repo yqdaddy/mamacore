@@ -10,9 +10,8 @@
 import json
 import os
 import subprocess
-import tempfile
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
@@ -98,9 +97,9 @@ class ClaudeCodeProvider(BaseProvider):
     """Claude Code Provider。
 
     启动方式：
-        claude --dangerously-skip-permissions -p "{prompt}"
+        claude --dangerously-skip-permissions --mcp-config .mcp.json -p "{prompt}"
 
-    MCP 连接：通过 --mcp-config 参数传入 JSON 配置。
+    MCP 连接：通过 --mcp-config 参数传入 JSON 文件路径。
     """
 
     name = "claude"
@@ -124,7 +123,7 @@ class ClaudeCodeProvider(BaseProvider):
         work_dir: str,
         extra_args: dict,
     ) -> list[str]:
-        # 将 MCP 配置写入临时文件
+        # 将 MCP 配置写入项目目录
         mcp_file = os.path.join(work_dir, ".mcp.json")
         with open(mcp_file, "w") as f:
             json.dump(mcp_config, f)
@@ -132,8 +131,6 @@ class ClaudeCodeProvider(BaseProvider):
         cmd = [
             "claude",
             "--dangerously-skip-permissions",
-            "--allowedTools", "Bash,Read,Write,Edit,Glob,Grep,mama_*",
-            "--output-format", "stream-json",
             "--mcp-config", mcp_file,
             "-p", prompt,
         ]
@@ -181,23 +178,21 @@ class CodexProvider(BaseProvider):
         with open(mcp_file, "w") as f:
             json.dump(mcp_config, f)
 
-        cmd = [
+        return [
             "codex",
             "exec",
             "-p", prompt,
             "--approval-mode", "danger-full-speed",
         ]
 
-        return cmd
-
 
 class OpenClawProvider(BaseProvider):
     """OpenClaw Provider。
 
     启动方式：
-        openclaw --prompt "{prompt}" --no-interactive
+        openclaw agent --local --message "{prompt}"
 
-    MCP 连接：OpenClaw 读取项目的 .mcp.json 或 ~/.openclaw/config。
+    MCP 连接：OpenClaw 自动读取项目根目录的 .mcp.json。
     """
 
     name = "openclaw"
@@ -221,11 +216,20 @@ class OpenClawProvider(BaseProvider):
         work_dir: str,
         extra_args: dict,
     ) -> list[str]:
+        # OpenClaw 读取 .mcp.json
+        mcp_file = os.path.join(work_dir, ".mcp.json")
+        with open(mcp_file, "w") as f:
+            json.dump(mcp_config, f)
+
         cmd = [
             "openclaw",
-            "--prompt", prompt,
-            "--no-interactive",
+            "agent",
+            "--local",
+            "--message", prompt,
         ]
+
+        if extra_args.get("model"):
+            cmd.extend(["--model", extra_args["model"]])
 
         return cmd
 

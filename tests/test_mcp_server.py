@@ -78,7 +78,7 @@ class TestMCPServerRegistration:
             assert "M.A.M.A. Core" in result
             assert "模块状态" in result
         from mamacore.server import mama_health_check
-        asyncio.get_event_loop().run_until_complete(_test())
+        asyncio.run(_test())
 
 
 class TestMCPProtocol:

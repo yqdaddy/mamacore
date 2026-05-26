@@ -41,9 +41,7 @@ class TestLLMClient:
         try:
             os.environ.pop("OPENAI_API_KEY", None)
             os.environ.pop("ANTHROPIC_API_KEY", None)
-            result = asyncio.get_event_loop().run_until_complete(
-                llm_generate("test prompt")
-            )
+            result = asyncio.run(llm_generate("test prompt"))
             assert result == ""
         finally:
             if orig_openai:
