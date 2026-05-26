@@ -1,7 +1,10 @@
 # ── 敏感数据和运行时生成 ──────────────────────────────
 data/
 .env
+.env.local
+.env.production
 .env.*
+!.env.example
 *.log
 
 # ── Python ───────────────────────────────────────────
@@ -39,6 +42,10 @@ services/dailyhot/node_modules/
 # ── Claude Code 内部文件（保留 skills，忽略内部状态）──
 .claude/scheduled_tasks.lock
 .claude/settings.local.json
+
+# ── 用户自定义 MCP 配置（保留示例） ───────────────────
+.mcp.json
+!.mcp.json.example
 
 # ── Playwright 浏览器缓存 ─────────────────────────
 .playwright-mcp/
