@@ -99,7 +99,7 @@ async def _query_dailyhot(source: str, count: int) -> str:
         return (
             f"热榜查询失败：{e}\n\n"
             f"DailyHotApi 热榜需要启动本地服务：\n"
-            f"  cd services/dailyhot && bash start.sh\n\n"
+            f"  cd services/dailyhot && npm install && npm start\n\n"
             f"可用平台: weibo/zhihu/toutiao/baidu/douyin/bilibili/36kr/juejin/csdn 等"
         )
     except Exception as e:

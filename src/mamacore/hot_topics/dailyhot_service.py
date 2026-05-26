@@ -1,7 +1,7 @@
 """DailyHotApi HTTP 客户端 —— 热榜聚合服务 Python 封装。
 
-支持 30+ 平台热榜：微博/知乎/头条/B站/抖音/百度/豆瓣/36Kr/CSDN 等。
-需要先启动 Node.js 服务: services/dailyhot/start.sh
+支持 56+ 平台热榜：微博/知乎/头条/B站/抖音/百度/豆瓣/36Kr/CSDN 等。
+需要先启动 Node.js 服务: cd services/dailyhot && npm start
 """
 
 import httpx

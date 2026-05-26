@@ -1,18 +1,20 @@
 {
-  "name": "mamacore-dailyhot",
+  "name": "dailyhot-skill",
   "version": "1.0.0",
-  "description": "M.A.M.A. Core 热榜聚合服务 —— 基于 DailyHotApi",
-  "private": true,
+  "description": "Claude Code skill for fetching today's hot topics from 56+ Chinese platforms",
   "type": "module",
+  "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "install-deps": "pnpm install"
+    "start": "cross-env NODE_ENV=production node scripts/start-server.mjs",
+    "query": "node scripts/query-hot.mjs"
   },
   "dependencies": {
-    "dailyhot-api": "^2.0.7"
+    "dailyhot-api": "^2.0.8"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20"
   }
 }
