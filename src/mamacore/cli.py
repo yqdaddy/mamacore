@@ -6,11 +6,24 @@ import asyncio
 import sys
 from pathlib import Path
 
+from mamacore import __version__
+
+def _version_callback(value: bool):
+    if value:
+        print(f"mama v{__version__}")
+        raise typer.Exit()
+
 app = typer.Typer(
     name="mama",
     help="公众号全流程自动化 CLI",
     add_completion=False,
 )
+
+@app.callback()
+def _main_callback(
+    version: bool = typer.Option(False, "--version", "-V", help="显示版本号", callback=_version_callback, is_eager=True),
+):
+    pass
 
 # ============================================================
 # 热点
@@ -73,7 +86,7 @@ def _generate_title_candidates(topic: str, framework: str, count: int = 5) -> li
 def write_article(
     topic: str = typer.Argument(..., help="文章主题"),
     framework: str = typer.Option("checklist", "-f", "--framework", help="文章框架"),
-    style: str = typer.Option("default", "-s", "--style", help="写作风格"),
+    style: str = typer.Option("analytical", "-s", "--style", help="写作风格: analytical/experience/satire/tongue/science"),
     output: str = typer.Option("", "-o", "--output", help="输出文件路径"),
     dry_run: bool = typer.Option(False, "--dry-run", help="仅打印生成的 prompt，不执行 LLM 调用"),
 ):
