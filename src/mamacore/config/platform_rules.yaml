@@ -1,0 +1,35 @@
+# 公众号平台规则
+wechat:
+  # 字数限制
+  max_title_length: 64
+  max_abstract_length: 120
+  optimal_title_length: 26  # 订阅列表不截断
+
+  # 微信搜一搜 SEO
+  seo:
+    keyword_density_min: 0.02
+    keyword_density_max: 0.05
+    first_paragraph_keywords: true
+    image_alt_keywords: true
+
+  # 发布限制
+  publish:
+    service_account_full_api: true
+    personal_account_draft_only: true  # 2025年7月后个人号无法自动发布
+
+  # 敏感词（广告法极限词示例，完整词库见 safety/wordlist/ad_law.txt）
+  ad_law_keywords:
+    - "最好"
+    - "第一"
+    - "国家级"
+    - "最高级"
+    - "唯一"
+    - "顶级"
+    - "绝无"
+    - "史无前例"
+
+  # 推荐发文时间（根据行业可调整）
+  optimal_publish_hours:
+    - 7    # 早高峰
+    - 12   # 午休
+    - 21   # 晚间

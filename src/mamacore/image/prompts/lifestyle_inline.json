@@ -1,0 +1,8 @@
+{
+  "name": "lifestyle_inline",
+  "description": "生活方式类内文配图提示词模板",
+  "base_prompt": "A warm lifestyle photo related to {topic}, natural lighting, soft tones, cozy atmosphere, instagram style, authentic feel",
+  "negative_prompt": "text, watermark, artificial looking, oversaturated, studio lighting",
+  "size": "1024x1024",
+  "style": "natural"
+}

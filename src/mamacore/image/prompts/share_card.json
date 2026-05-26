@@ -1,0 +1,8 @@
+{
+  "name": "share_card",
+  "description": "分享卡片提示词模板（朋友圈分享用）",
+  "base_prompt": "A minimalist share card design for {topic}, gradient background, elegant typography, abstract geometric shapes, modern and clean, suitable for social media sharing",
+  "negative_prompt": "text, watermark, complex details, people faces, logos",
+  "size": "1024x1024",
+  "style": "vivid"
+}

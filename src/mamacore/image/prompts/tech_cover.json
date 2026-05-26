@@ -1,0 +1,8 @@
+{
+  "name": "tech_cover",
+  "description": "科技类文章封面图提示词模板",
+  "base_prompt": "A minimalist tech illustration featuring {topic}, clean lines, modern design, blue and purple gradient, white background, professional style, vector art",
+  "negative_prompt": "text, watermark, blurry, noisy, cluttered, busy background",
+  "size": "1024x1024",
+  "style": "natural"
+}

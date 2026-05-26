@@ -1,0 +1,27 @@
+# 图片生成配置
+
+# 默认后端
+default_provider: "dalle"  # dalle | tongyi
+
+# DALL-E 配置
+dalle:
+  api_key_env: "OPENAI_API_KEY"
+  model: "dall-e-3"
+  size: "1024x1024"
+  quality: "standard"  # standard | hd
+  style: "natural"     # natural | vivid
+
+# 通义万相配置
+tongyi:
+  api_key_env: "DASHSCOPE_API_KEY"
+  model: "wanx-v1"
+  size: "1024*1024"
+
+# 提示词模板目录（由代码自动扫描 prompts/ 目录，无需手动配置）
+# prompts_dir: "prompts/"
+
+# 图片保存
+output:
+  dir: "data/images/"
+  format: "png"
+  max_size_mb: 5

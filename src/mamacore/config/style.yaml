@@ -1,0 +1,40 @@
+# 写作风格配置
+# 用户可在运行中修改，或通过"学习我的修改"自动更新
+
+# 默认人格
+default_persona: "第一人称亲历"
+default_style: "讽刺调侃"
+default_framework: "checklist"  # checklist | pain | compare | narrative
+default_word_count: [1500, 2500]
+
+# 标题风格
+title:
+  candidates: 10
+  scoring_dimensions:
+    - "数字"
+    - "悬念"
+    - "痛点"
+    - "情绪"
+
+# 情绪基调
+emotion:
+  options:
+    - "讽刺吐槽"
+    - "毒舌调侃"
+    - "理性分析"
+    - "亲历分享"
+    - "科普讲解"
+
+# 配图配置
+images:
+  default_count: 3  # 封面 + 内文
+  max_count: 5
+  styles:
+    - "tech"
+    - "lifestyle"
+    - "business"
+
+# 学习模式
+learning:
+  enabled: true
+  save_path: "../data/style_learnings.yaml"

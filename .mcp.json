@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "mamacore": {
+      "command": "uv",
+      "args": ["--directory", "${CLAUDE_PROJECT_DIR}", "run", "src/mamacore/server.py"],
+      "env": {
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+        "DASHSCOPE_API_KEY": "${DASHSCOPE_API_KEY}"
+      }
+    }
+  }
+}

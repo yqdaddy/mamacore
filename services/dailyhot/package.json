@@ -1,0 +1,18 @@
+{
+  "name": "mamacore-dailyhot",
+  "version": "1.0.0",
+  "description": "M.A.M.A. Core 热榜聚合服务 —— 基于 DailyHotApi",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "install-deps": "pnpm install"
+  },
+  "dependencies": {
+    "dailyhot-api": "^2.0.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

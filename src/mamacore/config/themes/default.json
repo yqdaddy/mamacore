@@ -1,0 +1,22 @@
+{
+  "name": "default",
+  "description": "公众号默认排版主题",
+  "css": {
+    "font_family": "-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif",
+    "font_size": "15px",
+    "line_height": "1.75",
+    "color": "#3f3f3f",
+    "heading_color": "#1a1a1a",
+    "link_color": "#576b95",
+    "blockquote": {
+      "border_color": "#e0e0e0",
+      "background_color": "#f7f7f7",
+      "color": "#888888"
+    },
+    "code": {
+      "background_color": "#f5f5f5",
+      "color": "#e83e8c",
+      "font_family": "Menlo, Monaco, 'Courier New', monospace"
+    }
+  }
+}
