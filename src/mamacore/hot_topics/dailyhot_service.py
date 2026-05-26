@@ -48,8 +48,11 @@ def _start_server() -> bool:
 
     # 检查是否已在运行
     try:
-        httpx.get(f"{BASE_URL}/all", timeout=2)
-        return True
+        resp = httpx.get(f"{BASE_URL}/all", timeout=2)
+        if resp.status_code == 200:
+            return True
+        # 非 200 状态码（如 502）：服务异常，尝试重启
+        print(f"[dailyhot] 服务异常 (状态码 {resp.status_code})，尝试重启...", file=sys.stderr)
     except (httpx.ConnectError, httpx.TimeoutException):
         pass
 
@@ -65,11 +68,13 @@ def _start_server() -> bool:
 
     # 启动服务
     print(f"[dailyhot] 正在启动热榜服务 (端口 {SERVICE_PORT})...", file=sys.stderr)
+    log_file = open(str(SERVICE_DIR / ".." / ".." / "data" / "cache" / "dailyhot.log"), "a")
+    log_file.write(f"\n=== {datetime.now().isoformat()} ===\n")
     _server_process = subprocess.Popen(
         ["node", "scripts/start-server.mjs", str(SERVICE_PORT)],
         cwd=str(SERVICE_DIR),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        stdout=log_file,
+        stderr=subprocess.STDOUT,
     )
 
     # 等待服务就绪（最多 10 秒）
