@@ -304,6 +304,15 @@ uv run src/mamacore/server.py
 uv run mama --help
 ```
 
+## 作者
+
+**码孖AI** — 专注 AI 工程化落地。
+
+资深互联网技术负责人，致力于让 AI Agent 真正为自媒体人提效。
+
+- 公众号：[mamaaios](https://mp.weixin.qq.com)
+- GitHub: [@yqdaddy](https://github.com/yqdaddy)
+
 ## 许可证
 
 MIT
