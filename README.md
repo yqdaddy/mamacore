@@ -310,7 +310,10 @@ uv run mama --help
 
 资深互联网技术负责人，致力于让 AI Agent 真正为自媒体人提效。
 
-- 公众号：[mamaaios](https://mp.weixin.qq.com)
+### 关注公众号
+
+![码孖AI 公众号](image/码孖AI.jpg)
+
 - GitHub: [@yqdaddy](https://github.com/yqdaddy)
 
 ## 许可证
