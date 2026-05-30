@@ -31,9 +31,21 @@ mama --help
 
 安装后 `mama` 和 `mama-server` 命令全局可用，任何目录都能用。
 
-### 方式二：Claude Code 集成
+### 方式二：Claude Code 全局 Plugin（推荐）
 
-**A. 项目级使用（进入即激活）**
+一条命令安装到全局，**任何项目**都能用：
+
+```bash
+npx skills add yqdaddy/mamacore --global
+```
+
+安装后 3 个 Skill 立即可用：
+
+- `/wechat-article` — 公众号文章全流程（8 步）
+- `/wechat-analytics` — 数据分析与内容策略（6 步）
+- `/wechat-image` — 图片生成（3 步）
+
+### 方式三：Claude Code 项目级使用
 
 ```bash
 git clone https://github.com/yqdaddy/mamacore.git
@@ -42,14 +54,20 @@ cd mamacore && uv sync && claude
 
 Claude Code 自动发现 `.mcp.json`（21 个 Tools）和 `.claude/skills/`（3 个 Skill）。
 
-**B. 全局注册（任何目录都能用）**
+### 方式四：pip 全局安装（CLI 工具）
 
 ```bash
 pip install git+https://github.com/yqdaddy/mamacore.git
+mama --help
+```
+
+安装后 `mama` 和 `mama-server` 命令全局可用。如需同时注册 MCP Server：
+
+```bash
 claude mcp add mamacore -- mama-server
 ```
 
-### 方式三：开发模式安装
+### 方式五：开发模式安装
 
 ```bash
 git clone https://github.com/yqdaddy/mamacore.git
