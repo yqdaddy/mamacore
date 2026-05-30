@@ -39,9 +39,11 @@ Thumbs.db
 # ── 服务依赖 ─────────────────────────────────────────────
 services/dailyhot/node_modules/
 
-# ── Claude Code 内部文件（保留 skills，忽略内部状态）──
+# ── Claude Code 内部文件 ────────────────────────────────
 .claude/scheduled_tasks.lock
 .claude/settings.local.json
+.agents/
+skills-lock.json
 
 # ── 用户自定义 MCP 配置（保留示例） ───────────────────
 .mcp.json
