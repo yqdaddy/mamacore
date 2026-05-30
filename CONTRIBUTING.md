@@ -6,7 +6,7 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/your-org/mamacore.git
+git clone https://github.com/yqdaddy/mamacore.git
 cd mamacore
 
 # 安装依赖
