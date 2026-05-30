@@ -2,8 +2,8 @@
   "name": "mamacore",
   "version": "0.1.0",
   "description": "公众号全流程自动化 —— Harness + Model = Agent",
-  "repository": "https://github.com/your-org/mamacore",
-  "homepage": "https://github.com/your-org/mamacore#readme",
+  "repository": "https://github.com/yqdaddy/mamacore",
+  "homepage": "https://github.com/yqdaddy/mamacore#readme",
   "skills": [
     {
       "name": "wechat-article",

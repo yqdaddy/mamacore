@@ -96,7 +96,7 @@ cp .env.example .env
 | `MAMA_WECHAT_APP_ID`     | 公众号 AppID                  | 发布功能必填         |
 | `MAMA_WECHAT_APP_SECRET` | 公众号 AppSecret              | 发布功能必填         |
 | `MAMA_ACCOUNT_TYPE`      | 账号类型: service/personal     | 否（默认 personal） |
-| `DAILYHOT_API_URL`       | DailyHotApi 服务地址            | 使用热榜功能时必填     |
+| `DAILYHOT_API_URL`       | DailyHotApi 服务地址           | 使用热榜功能时必填      |
 | `MAMA_EXPORTER_URL`      | wechat-article-exporter 地址 | 否              |
 
 ### Claude Code 集成
