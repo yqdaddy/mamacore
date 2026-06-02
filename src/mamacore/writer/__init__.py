@@ -17,6 +17,11 @@ from mamacore.writer.style import (
     get_default_style,
     get_style_prompt,
 )
+from mamacore.writer.style_engine import (
+    build_system_prompt,
+    get_persona_prompt,
+    list_personas,
+)
 
 
 def register_tools(mcp: FastMCP) -> None:
@@ -27,6 +32,7 @@ def register_tools(mcp: FastMCP) -> None:
         topic: str,
         framework: str = "",
         style: str = "",
+        persona: str = "",
     ) -> list[dict]:
         """为指定主题生成文章大纲。
 
@@ -34,6 +40,7 @@ def register_tools(mcp: FastMCP) -> None:
             topic: 文章主题。
             framework: 框架类型（checklist/pain/compare/narrative），默认使用配置文件中的值。
             style: 写作风格（satire/tongue/analytical/experience/science），默认使用配置文件中的值。
+            persona: 写作人格（luxun-style/warm-editor/cold-analyst/sharp-journalist/midnight-friend/industry-observer），优先级高于 style。
 
         Returns:
             结构化大纲列表，每项包含 section（章节名）和 key_points（关键要点列表）。
@@ -47,6 +54,7 @@ def register_tools(mcp: FastMCP) -> None:
         topic: str,
         framework: str = "",
         style: str = "",
+        persona: str = "",
         include_images: bool = False,
     ) -> dict:
         """全流程生成公众号文章：大纲 → 初稿 → 增强 → 标题候选。
@@ -55,6 +63,7 @@ def register_tools(mcp: FastMCP) -> None:
             topic: 文章主题。
             framework: 框架类型（checklist/pain/compare/narrative），默认使用配置文件中的值。
             style: 写作风格（satire/tongue/analytical/experience/science），默认使用配置文件中的值。
+            persona: 写作人格（luxun-style/warm-editor/cold-analyst/sharp-journalist/midnight-friend/industry-observer），优先级高于 style。
             include_images: 是否包含配图建议（当前为模拟数据）。
 
         Returns:
@@ -201,4 +210,7 @@ __all__ = [
     "get_default_framework",
     "get_default_style",
     "build_style_system_prompt",
+    "build_system_prompt",
+    "get_persona_prompt",
+    "list_personas",
 ]

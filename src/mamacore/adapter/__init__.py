@@ -1,4 +1,7 @@
-"""公众号排版适配模块 —— 容器语法 + 主题管理 + SEO 优化。"""
+"""公众号排版适配模块 —— 容器语法 + 主题管理 + SEO 优化。
+
+整合了 wewrite 的 18 个排版主题和完整 Markdown→HTML 转换器。
+"""
 
 from .wechat_format import render_containers, markdown_to_wechat_html
 from .theme import list_themes, load_theme
@@ -11,7 +14,7 @@ def register_tools(mcp) -> None:
     @mcp.tool()
     async def mama_format_article(
         article_md: str,
-        theme: str = "default",
+        theme: str = "professional-clean",
     ) -> str:
         """将 Markdown 文章转换为公众号 HTML 格式，支持容器语法和排版主题。
 
@@ -20,6 +23,10 @@ def register_tools(mcp) -> None:
         - :::timeline ... :::end → 时间线
         - :::callout variant=info/warning/success/tip ... :::end → 引用框
         - :::code language=python ... :::end → 代码块
+
+        可用主题: professional-clean, sspai, bytedance, minimal, newspaper,
+        focus-red, bold-green, bold-navy, tech-modern, github, warm-editorial,
+        elegant-rose, minimal-gold, ink, midnight, bauhaus, bytedance, focus-red
 
         Args:
             article_md: Markdown 格式文章

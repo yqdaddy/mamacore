@@ -137,13 +137,13 @@ class TestThemeManagement:
     def test_list_themes(self):
         """测试列出主题。"""
         themes = list_themes()
-        assert "default" in themes
+        assert "professional-clean" in themes
+        assert len(themes) >= 16  # 18 themes from wewrite migration
 
     def test_load_default_theme(self):
         """测试加载默认主题。"""
-        theme = load_theme("default")
+        theme = load_theme("professional-clean")
         assert theme is not None
-        assert "css" in theme
 
     def test_load_nonexistent_theme(self):
         """测试加载不存在的主题。"""

@@ -1,0 +1,93 @@
+# 微信公众号风控规则 — 机器可读版
+# 基于 wechat-risk-rules.md 提炼
+# safety_checker.py 和 publish_bed_manual.py 共用此文件
+
+high_risk:
+  # 违规导流（直接封号）
+  - pattern: "加微信"
+    category: "违规导流"
+  - pattern: "加我微信"
+    category: "违规导流"
+  - pattern: "微信号"
+    category: "违规导流"
+  - pattern: "个人微信"
+    category: "违规导流"
+  - pattern: "私人微信"
+    category: "违规导流"
+  - pattern: "加V"
+    category: "违规导流"
+  - pattern: "加v"
+    category: "违规导流"
+  - pattern: "➕威"
+    category: "违规导流"
+  - pattern: "➕V"
+    category: "违规导流"
+  - pattern: "➕v"
+    category: "违规导流"
+  - pattern: "薇信"
+    category: "违规导流"
+  - pattern: "威信"
+    category: "违规导流"
+  # 诱导分享
+  - pattern: "转发.*抽奖"
+    category: "诱导分享"
+  - pattern: "转发.*领"
+    category: "诱导分享"
+  - pattern: "助力.*解锁"
+    category: "诱导分享"
+  - pattern: "砍价"
+    category: "诱导分享"
+  - pattern: "拼团"
+    category: "诱导分享"
+  # 极限词/虚假促销
+  - pattern: "限时免费"
+    category: "虚假促销"
+  - pattern: "仅限今天"
+    category: "虚假促销"
+  - pattern: "最后机会"
+    category: "虚假促销"
+  - pattern: "仅剩.*个"
+    category: "虚假促销"
+  # 政治敏感（直接封号）
+  - pattern: "法轮"
+    category: "政治敏感"
+  - pattern: "台独"
+    category: "政治敏感"
+  - pattern: "藏独"
+    category: "政治敏感"
+  - pattern: "疆独"
+    category: "政治敏感"
+
+medium_risk:
+  # 营销暗示
+  - pattern: "免费领取"
+    category: "营销暗示"
+  - pattern: "领红包"
+    category: "营销暗示"
+  - pattern: "领福利"
+    category: "营销暗示"
+  - pattern: "领取资料"
+    category: "营销暗示"
+  # 诱导转发
+  - pattern: "转发朋友圈"
+    category: "诱导转发"
+  - pattern: "转发群"
+    category: "诱导转发"
+  - pattern: "分享截图"
+    category: "诱导转发"
+  # 激进营销
+  - pattern: "不转不是"
+    category: "激进营销"
+  - pattern: "不转亏了"
+    category: "激进营销"
+  - pattern: "必转"
+    category: "激进营销"
+
+low_risk:
+  # 正常但需检查上下文
+  - pattern: "点赞"
+    category: "互动引导"
+  - pattern: "在看"
+    category: "互动引导"
+  - pattern: "关注"
+    category: "互动引导"

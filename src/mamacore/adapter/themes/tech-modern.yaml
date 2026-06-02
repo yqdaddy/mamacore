@@ -1,0 +1,201 @@
+name: "tech-modern"
+description: "橙蓝科技风格，适合技术和产品类内容"
+colors:
+  primary: "#FF6B35"
+  secondary: "#1E3A5F"
+  text: "#333333"
+  text_light: "#666666"
+  background: "#ffffff"
+  code_bg: "#282c34"
+  code_color: "#abb2bf"
+  quote_border: "#FF6B35"
+  quote_bg: "#fff5f0"
+  border_radius: "8px"
+  darkmode:
+    background: "#1a1a2e"
+    text: "#c8c8c8"
+    text_light: "#999999"
+    primary: "#FF8C5A"
+    code_bg: "#1e1e2e"
+    code_color: "#c8cad8"
+    quote_bg: "#2a2520"
+    quote_border: "#FF6B35"
+base_css: |
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333333;
+    background: #ffffff;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px;
+    word-wrap: break-word;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #FF6B35;
+    margin: 32px 0 16px 0;
+    padding: 8px 0 8px 14px;
+    border-left: 5px solid #FF6B35;
+    line-height: 1.4;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #FF6B35;
+    margin: 20px 0 10px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #FF6B35;
+    line-height: 1.4;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #FF6B35;
+    margin: 24px 0 12px 0;
+    padding-left: 12px;
+    border-left: 3px solid #FF6B35;
+    line-height: 1.4;
+  }
+
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #FF6B35;
+    margin: 20px 0 10px 0;
+    line-height: 1.4;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333333;
+    margin: 12px 0;
+  }
+
+  strong {
+    font-weight: 700;
+    color: #FF6B35;
+  }
+
+  em {
+    font-style: italic;
+    color: #333333;
+  }
+
+  code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 14px;
+    background: #f5f5f5;
+    color: #e83e8c;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  pre {
+    background: #282c34;
+    color: #abb2bf;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 16px 0;
+    line-height: 1.6;
+  }
+
+  pre code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 14px;
+    background: none;
+    color: #abb2bf;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  blockquote {
+    border-left: 4px solid #FF6B35;
+    background: #fff5f0;
+    margin: 16px 0;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    color: #333333;
+  }
+
+  blockquote p {
+    margin: 8px 0;
+    color: #333333;
+  }
+
+  ul {
+    padding-left: 24px;
+    margin: 12px 0;
+    list-style-type: disc;
+    color: #FF6B35;
+  }
+
+  ol {
+    padding-left: 24px;
+    margin: 12px 0;
+  }
+
+  li {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #333333;
+    margin: 6px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 15px;
+  }
+
+  thead {
+    background: #ffffff;
+    color: #FF6B35;
+  }
+
+  th {
+    color: #FF6B35;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid #FF6B35;
+  }
+
+  td {
+    padding: 10px 14px;
+    border: 1px solid #e5e7eb;
+    color: #333333;
+  }
+
+  tr {
+    background: #ffffff;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 24px auto;
+    border-radius: 8px;
+  }
+
+  a {
+    color: #FF6B35;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, #FF6B35, #1E3A5F, transparent);
+    margin: 24px 0;
+  }
