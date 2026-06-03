@@ -104,3 +104,16 @@ def register_tools(mcp) -> None:
             lines.append("")
 
         return "\n".join(lines)
+
+    @mcp.tool()
+    async def mama_list_personas() -> str:
+        """列出所有可用的写作人格 (Persona)。"""
+        from mamacore.writer.style_engine import list_personas, load_persona
+
+        personas = list_personas()
+        lines = ["## 可用写作人格\n"]
+        for name in personas:
+            persona = load_persona(name)
+            desc = persona.get("description", "")
+            lines.append(f"- **{name}**: {desc}")
+        return "\n".join(lines)

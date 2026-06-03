@@ -23,6 +23,10 @@ dependencies = [
     "typer>=0.12",
     "rich>=13.7",
     "openai>=1.0",
+    # Converter dependencies
+    "cssutils>=2.9.0",
+    "markdown>=3.5",
+    "beautifulsoup4>=4.12",
 ]
 
 [project.optional-dependencies]

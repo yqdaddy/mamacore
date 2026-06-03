@@ -133,6 +133,59 @@ def register_tools(mcp: FastMCP) -> None:
 
         return "\n".join(lines)
 
+    @mcp.tool()
+    async def mama_quality_score(
+        text: str,
+    ) -> str:
+        """给文章进行人性化评分，检测是否像 AI 生成的。
+
+        三维评分系统：
+        - Tier 1 (统计特征): 句长方差、段落方差、词汇丰富度
+        - Tier 2 (模式特征): 禁用词密度、破句风格、真实来源引用
+        - Tier 3 (语义特征): 由 LLM 评估的风格一致性
+
+        Args:
+            text: 文章文本
+
+        Returns:
+            Markdown 格式的评分报告
+        """
+        from mamacore.writer.quality import score_humanness
+
+        result = score_humanness(text)
+
+        verdict_icon = {"pass": "✅ 通过", "warning": "⚠️ 警告", "fail": "❌ 未通过"}
+        lines = [
+            f"## 人性化评分: {result['score']:.0%}",
+            f"**判定**: {verdict_icon.get(result['verdict'], result['verdict'])}",
+            "",
+            "### 维度得分",
+            f"- Tier 1 (统计特征): {result['tier1']:.0%}",
+            f"- Tier 2 (模式特征): {result['tier2']:.0%}",
+            f"- Tier 3 (语义特征): {result['tier3']:.0%}",
+            "",
+            "### 详细指标",
+        ]
+        for key, val in result["details"].items():
+            name = {
+                "sentence_variance": "句长方差",
+                "banned_words": "禁用词密度",
+                "broken_sentences": "破句风格",
+                "real_sources": "真实来源",
+                "paragraph_variance": "段落方差",
+                "negative_emotion": "负面情绪",
+                "vocabulary_richness": "词汇丰富度",
+            }.get(key, key)
+            status = "✅" if val >= 0.6 else "⚠️" if val >= 0.3 else "❌"
+            lines.append(f"- {status} {name}: {val:.0%}")
+
+        if result["verdict"] == "fail":
+            lines.append("\n**建议**：文章 AI 特征明显，建议增加个人经历、调整句式变化、减少过渡词。")
+        elif result["verdict"] == "warning":
+            lines.append("\n**建议**：部分指标接近 AI 特征，可优化句长变化和负面情绪表达。")
+
+        return "\n".join(lines)
+
     # Private helpers (not registered as MCP tools)
 
 
